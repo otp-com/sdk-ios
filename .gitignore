@@ -1,0 +1,5 @@
+.DS_Store
+
+# The artifact is attached to a release and never stored here: see Package.swift.
+*.xcframework/
+*.xcframework.zip
