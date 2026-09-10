@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 import PackageDescription
 
 // A distribution shell. There is no source here: the framework is built from the private
@@ -7,9 +7,11 @@ import PackageDescription
 // `url` and `checksum` are managed by the release tooling, not by hand. They always name a published
 // release, so a checkout of `main` resolves to a working artifact.
 //
-// swift-tools-version is 5.9 rather than 6.0 on purpose: this manifest only declares a binary target,
-// so it does not need a newer toolchain, and requiring one would exclude projects that are otherwise
-// perfectly able to consume the framework.
+// swift-tools-version is 6.0 because the framework's public interface uses typed throws, which only a
+// Swift 6 compiler can read. It was 5.9 on the reasoning that a manifest declaring nothing but a
+// binary target needs no newer toolchain. That is true of the manifest and false of the framework:
+// Xcode 15 resolved the package and then failed at `import Otp`, which is a worse failure than being
+// turned away at resolution with a version it can explain.
 let package = Package(
   name: "Otp",
   platforms: [.iOS(.v15)],

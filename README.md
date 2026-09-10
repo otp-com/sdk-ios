@@ -42,6 +42,11 @@ CocoaPods:
 pod 'Otp'
 ```
 
+The framework is static. If you add `Otp.xcframework` to a target by hand, set it to **Do Not Embed**
+under **General > Frameworks, Libraries, and Embedded Content**. Xcode defaults to **Embed & Sign**,
+which copies a static archive into your app bundle and can fail App Store validation. Swift Package
+Manager and CocoaPods set this correctly on their own.
+
 ## Use it
 
 Configure once, at launch:
@@ -145,6 +150,11 @@ case .rejected(let attemptsRemaining):
 
 Everything the screen needs is on `PendingOtp`, so no part of this polls.
 
+The `@unknown default` is not boilerplate. The SDK ships as a resilient binary so its enums can gain
+cases without breaking apps already on the App Store, and Swift asks you to say what happens if one
+does. The same applies to `OtpChannel`, `OtpStatus`, `OtpError.Kind` and `RecipientKind`. Leave it out
+and you get a warning today and an error under the Swift 6 language mode.
+
 ## Device integrity
 
 The SDK registers a hardware-backed key with Apple's App Attest on first use and signs every send
@@ -169,7 +179,8 @@ it is written for you, not for your user, and it is not translated.
 ```swift
 do {
     let verification = try await OtpClient.verify(recipient: recipient)
-} catch let error as OtpError {
+} catch {
+    // `error` is already an OtpError. The SDK uses typed throws, so there is nothing to cast.
     switch error.kind {
     case .cancelled:       break                      // the user closed the screen
     case .rateLimited:     wait(error.retryAfter)      // seconds, when the API sent one

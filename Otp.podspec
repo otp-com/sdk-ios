@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.license           = { :type => 'Commercial', :file => 'LICENSE' }
 
   s.platform          = :ios, '15.0'
-  s.swift_version     = '5.9'
+  s.swift_version     = '6.0'
 
   # The artifact is fetched from the release rather than stored in the repository. A binary committed
   # per version would stay in the clone forever, and CocoaPods reads a zip perfectly well.
