@@ -163,10 +163,11 @@ app.
 
 You do not have to configure anything for this. Two consequences worth knowing:
 
-- **App Attest is unavailable on the simulator.** If your app has **Require a device proof** enabled
-  in the panel, sends from a simulator are refused. The SDK logs one line saying so.
-- Turn the panel setting on only once your integration is live, because any app version that does not
-  register a key stops working when you do.
+- **App Attest is unavailable on the simulator.** Where a proof is required, sends from one are
+  refused. The SDK logs one line saying so.
+- **Whether a proof is required follows the key.** A sandbox key (`otp_pk_test_…`) never requires
+  one, so the simulator is fine while you integrate. A live key does, once the platform asks for it,
+  which is why the last thing to test before going live is a real device with your live key.
 
 `DeviceProof.isSupported` tells you whether this device can produce a proof at all, which is the first
 thing to check when a send is refused on hardware you expected to work.
