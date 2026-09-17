@@ -33,7 +33,7 @@ https://github.com/otp-com/sdk-ios
 Or in a `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/otp-com/sdk-ios", from: "0.1.0")
+.package(url: "https://github.com/otp-com/sdk-ios", from: "0.2.0")
 ```
 
 CocoaPods:
@@ -161,7 +161,13 @@ The SDK registers a hardware-backed key with Apple's App Attest on first use and
 with it. That is what stops a publishable key lifted out of your binary from being used outside your
 app.
 
-You do not have to configure anything for this. Three consequences worth knowing:
+You do not have to configure anything for this. `DeviceProof.register()` returns a `DeviceRegistration`:
+`.verified` when the key can sign, and `.inert` when the API recorded the key but could not verify it,
+so it cannot sign. `.inert` is not fatal: it still throws `deviceProofRejected` for the failures that
+really are one (not configured, unsupported device, transport, a hard 403). Whether an unsigned send
+from an inert key is accepted is the server's decision, not something to branch on here.
+
+Three consequences worth knowing:
 
 - **App Attest is unavailable on the simulator.** Where a proof is required, sends from one are
   refused. The SDK logs one line saying so.

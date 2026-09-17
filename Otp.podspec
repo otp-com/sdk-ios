@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name              = 'Otp'
-  s.version           = '0.1.0'
+  s.version           = '0.2.0'
   s.summary           = 'Phone and email verification for iOS.'
   s.description       = <<~DESC
     Verifies a phone number or an email address with a one-time code, over SMS, WhatsApp, email or
