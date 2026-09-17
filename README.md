@@ -161,13 +161,21 @@ The SDK registers a hardware-backed key with Apple's App Attest on first use and
 with it. That is what stops a publishable key lifted out of your binary from being used outside your
 app.
 
-You do not have to configure anything for this. Two consequences worth knowing:
+You do not have to configure anything for this. Three consequences worth knowing:
 
 - **App Attest is unavailable on the simulator.** Where a proof is required, sends from one are
   refused. The SDK logs one line saying so.
 - **Whether a proof is required follows the key.** A sandbox key (`otp_pk_test_…`) never requires
   one, so the simulator is fine while you integrate. A live key does, once the platform asks for it,
   which is why the last thing to test before going live is a real device with your live key.
+- **A live key needs a build that attests in production.** App Attest runs in one of two
+  environments: a build installed from Xcode attests in the development one, TestFlight and App Store
+  builds in production. A live key accepts only production, so an app that registers fine with a
+  sandbox key is refused with a live key on that same real device, with a 403 at registration and
+  `Device attestation rejected: attestation`. Develop against the sandbox key and test the live key
+  from TestFlight. The refusal is deliberate: a development attestation comes from Xcode, so
+  honouring it on a live key would let anyone holding your publishable key and a Mac register a
+  device as yours.
 
 `DeviceProof.isSupported` tells you whether this device can produce a proof at all, which is the first
 thing to check when a send is refused on hardware you expected to work.
