@@ -21,8 +21,8 @@ let package = Package(
   targets: [
     .binaryTarget(
       name: "Otp",
-      url: "https://github.com/otp-com/sdk-ios/releases/download/0.3.0/Otp.xcframework.zip",
-      checksum: "c30f2d55765af479c50cd107e3c7a00c23f23e2bdf7afb3256e4821ff28d234c"
+      url: "https://github.com/otp-com/sdk-ios/releases/download/0.3.1/Otp.xcframework.zip",
+      checksum: "7e4a56944883ab95df5de9d6dbcbc261fd913233140aa0ad2631861b515dbf52"
     )
   ]
 )
