@@ -121,7 +121,9 @@ if let verification = try await OtpClient.resumeInterrupted() {
 }
 ```
 
-It returns `nil` when there was nothing in flight.
+It returns `nil` when there was nothing in flight, which includes a verification that expired while
+they were away and one they closed without answering. If their WhatsApp message approved the
+verification while they were away, it returns the proof directly and shows no screen.
 
 ## Your own screen
 
@@ -136,23 +138,35 @@ let pending = try await session.start(recipient: "+14155552671")
 pending.codeLength          // how many boxes to draw
 pending.expiresAt           // count down from this
 pending.resendAvailableAt   // nil means it can never be resent
-pending.handoffURL          // WhatsApp only: open this, the code follows
+pending.handoffURL          // WhatsApp only: open this
+pending.completion          // .code: the user enters one. .inbound: their WhatsApp message is the answer
 
 switch try await session.submit(code: enteredCode) {
 case .verified(let verification):
     // verification.token
-case .rejected(let attemptsRemaining):
+case .rejected(let attemptsRemaining, let reason):
     // a wrong code is an outcome, not an error
 @unknown default:
     break
 }
 ```
 
-Everything the screen needs is on `PendingOtp`, so no part of this polls.
+When `completion` is `.inbound` there is no code to collect. Open `handoffURL` and wait instead:
+
+```swift
+let outcome = try await session.awaitApproval()   // same shape as submit
+```
+
+Everything the screen needs is on `PendingOtp`, including both deadlines, so a `.code` verification
+is never polled. An `.inbound` one is, and `awaitApproval` is that loop: it reads the verification
+every few seconds until it is approved, expired or failed. Which WhatsApp mode your account runs is
+set on our side; read `completion` rather than assuming one. After a restart, `session.resume(_:)`
+on an approved `.inbound` verification carries its proof in `pending.verification`; the API issues it
+once, so take it from there rather than resuming again.
 
 The `@unknown default` is not boilerplate. The SDK ships as a resilient binary so its enums can gain
 cases without breaking apps already on the App Store, and Swift asks you to say what happens if one
-does. The same applies to `OtpChannel`, `OtpStatus`, `OtpError.Kind` and `RecipientKind`. Leave it out
+does. The same applies to `OtpChannel`, `OtpStatus`, `OtpCompletion`, `OtpError.Kind` and `RecipientKind`. Leave it out
 and you get a warning today and an error under the Swift 6 language mode.
 
 ## Device integrity

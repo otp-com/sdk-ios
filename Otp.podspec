@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
     Telegram, with the channel chosen by your account routing. Ships a drop-in screen and a headless
     core for apps that want their own.
   DESC
-  s.homepage          = 'https://otp.com?utm_source=github-sdk-ios'
+  s.homepage          = 'https://github.com/otp-com/sdk-ios'
   s.documentation_url = 'https://github.com/otp-com/sdk-ios'
   s.author            = { 'otp.com' => 'info@otp.com' }
   # :text rather than :file: the published source is the xcframework zip, which carries no LICENSE,
