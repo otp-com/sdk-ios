@@ -33,7 +33,7 @@ https://github.com/otp-com/sdk-ios
 Or in a `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/otp-com/sdk-ios", from: "0.4.0")
+.package(url: "https://github.com/otp-com/sdk-ios", from: "0.4.1")
 ```
 
 CocoaPods:
